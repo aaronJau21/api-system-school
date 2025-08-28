@@ -5,6 +5,7 @@ CREATE TABLE `User` (
     `name` VARCHAR(191) NOT NULL,
     `father_lastname` VARCHAR(191) NOT NULL,
     `mother_lastname` VARCHAR(191) NOT NULL,
+    `phone` VARCHAR(191) NOT NULL,
     `password` VARCHAR(191) NOT NULL,
     `status` BOOLEAN NOT NULL,
     `images` TEXT NULL,

@@ -20,6 +20,7 @@ model User {
   name            String
   father_lastname String
   mother_lastname String
+  phone           String
   password        String
   status          Boolean
   images          String? @db.Text

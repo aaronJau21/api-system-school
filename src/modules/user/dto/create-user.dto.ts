@@ -15,4 +15,7 @@ export class CreateUserDto {
 
   @IsString()
   mother_lastname: string;
+
+  @IsString()
+  phone: string;
 }

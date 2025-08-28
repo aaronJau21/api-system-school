@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { ConflictException, Inject, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import type { IUserRepository } from './interfaces/repository/iuser.repository';
@@ -12,19 +12,30 @@ export class UserService {
   ) {}
 
   async create(createUserDto: CreateUserDto) {
+    const existUser = await this.userRepository.findByEmail(
+      createUserDto.email,
+    );
+    if (existUser) {
+      throw new ConflictException('El usuario ya existe');
+    }
+
     const hashedPassword = await this.argonService.hash(createUserDto.password);
-    return this.userRepository.create({
+    await this.userRepository.create({
       ...createUserDto,
       password: hashedPassword,
     });
+    return {
+      msg: 'Usuario creado exitosamente',
+    };
   }
 
   async findByEmail(email: string) {
     return this.userRepository.findByEmail(email);
   }
 
-  findAll() {
-    return `This action returns all user`;
+  async findAll() {
+    const users = await this.userRepository.getAll();
+    return users;
   }
 
   findOne(id: number) {

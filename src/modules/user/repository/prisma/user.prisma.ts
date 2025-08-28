@@ -3,6 +3,7 @@ import { User } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from 'src/modules/user/dto/create-user.dto';
 import { IUserRepository } from 'src/modules/user/interfaces/repository/iuser.repository';
+import { IUser } from '../../interfaces/response/getAll.interface';
 
 @Injectable()
 export class UserPrisma implements IUserRepository {
@@ -21,6 +22,20 @@ export class UserPrisma implements IUserRepository {
   async findByEmail(email: string): Promise<User | null> {
     return await this.prisma.user.findUnique({
       where: { email },
+    });
+  }
+
+  async getAll(): Promise<IUser[]> {
+    return await this.prisma.user.findMany({
+      where: {
+        deletedAt: null,
+      },
+      omit: {
+        password: true,
+        createdAt: true,
+        updatedAt: true,
+        deletedAt: true,
+      },
     });
   }
 }
