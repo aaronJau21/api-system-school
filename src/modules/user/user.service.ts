@@ -1,4 +1,9 @@
-import { ConflictException, Inject, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import type { IUserRepository } from './interfaces/repository/iuser.repository';
@@ -38,12 +43,23 @@ export class UserService {
     return users;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async updateStatus(id: number) {
+    const user = await this.findOne(id);
+
+    if (!user) throw new NotFoundException('Usuario no encontrado');
+
+    return await this.userRepository.updateStatus(id, !user.status);
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  findOne(id: number) {
+    return this.userRepository.findById(id);
+  }
+
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    const user = await this.findOne(id);
+
+    if (!user) throw new NotFoundException('Usuario no encontrado');
+    return this.userRepository.updateUser(id, updateUserDto);
   }
 
   remove(id: number) {
